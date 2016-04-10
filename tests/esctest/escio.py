@@ -72,7 +72,9 @@ def WriteOSC(params, bel=False, requestsReport=False):
 def WriteDCS(introducer, params):
   Write(DCS() + introducer + params + ST)
 
-def WriteCSI(prefix="", params=[], intermediate="", final="", requestsReport=False):
+def WriteCSI(prefix="", params=None, intermediate="", final="", requestsReport=False):
+  if params is None:
+    params = []
   if len(final) == 0:
     raise esctypes.InternalError("final must not be empty")
   def StringifyCSIParam(p):
