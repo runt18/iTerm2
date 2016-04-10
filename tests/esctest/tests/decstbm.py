@@ -39,18 +39,18 @@ class DECSTBMTests(object):
     size = GetScreenSize()
     esccmd.DECSTBM(3, 3)
     for i in xrange(size.height()):
-      escio.Write("%04d" % i)
+      escio.Write("{0:04d}".format(i))
       y = i + 1
       if y != size.height():
         escio.Write(CR + LF)
     for i in xrange(size.height()):
       y = i + 1
-      AssertScreenCharsInRectEqual(Rect(1, y, 4, y), [ "%04d" % i ])
+      AssertScreenCharsInRectEqual(Rect(1, y, 4, y), [ "{0:04d}".format(i) ])
     esccmd.CUP(Point(1, size.height()))
     escio.Write(LF)
     for i in xrange(size.height() - 1):
       y = i + 1
-      AssertScreenCharsInRectEqual(Rect(1, y, 4, y), [ "%04d" % (i + 1) ])
+      AssertScreenCharsInRectEqual(Rect(1, y, 4, y), [ "{0:04d}".format((i + 1)) ])
 
     y = size.height()
     AssertScreenCharsInRectEqual(Rect(1, y, 4, y), [ NUL * 4 ])

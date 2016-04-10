@@ -145,7 +145,7 @@ def format_result(r):
     if '\n' in repr_str: repr_str = repr(repr_str)
     if len(repr_str) > resultlimit:
         repr_str = repr_str[:resultlimit]+" ..."
-    result = "<%s @ 0x%x> (%s)" % (type(r).__name__,id(r),repr_str)
+    result = "<{0!s} @ 0x{1:x}> ({2!s})".format(type(r).__name__, id(r), repr_str)
     return result
 
 
@@ -156,7 +156,7 @@ def format_stack_entry(r):
     if len(repr_str) < 16:
         return repr_str
     else:
-        return "<%s @ 0x%x>" % (type(r).__name__,id(r))
+        return "<{0!s} @ 0x{1:x}>".format(type(r).__name__, id(r))
 
 #-----------------------------------------------------------------------------
 #                        ===  LR Parsing Engine ===
@@ -349,7 +349,7 @@ class LRParser:
 
             # --! DEBUG
             debug.debug('Stack  : %s',
-                        ("%s . %s" % (" ".join([xx.type for xx in symstack][1:]), str(lookahead))).lstrip())
+                        ("{0!s} . {1!s}".format(" ".join([xx.type for xx in symstack][1:]), str(lookahead))).lstrip())
             # --! DEBUG
 
             # Check the action table
@@ -490,7 +490,7 @@ class LRParser:
 
                 # --! DEBUG
                 debug.error('Error  : %s',
-                            ("%s . %s" % (" ".join([xx.type for xx in symstack][1:]), str(lookahead))).lstrip())
+                            ("{0!s} . {1!s}".format(" ".join([xx.type for xx in symstack][1:]), str(lookahead))).lstrip())
                 # --! DEBUG
 
                 # We have some kind of parsing error here.  To handle
@@ -531,9 +531,9 @@ class LRParser:
                             if hasattr(errtoken,"lineno"): lineno = lookahead.lineno
                             else: lineno = 0
                             if lineno:
-                                sys.stderr.write("yacc: Syntax error at line %d, token=%s\n" % (lineno, errtoken.type))
+                                sys.stderr.write("yacc: Syntax error at line {0:d}, token={1!s}\n".format(lineno, errtoken.type))
                             else:
-                                sys.stderr.write("yacc: Syntax error, token=%s" % errtoken.type)
+                                sys.stderr.write("yacc: Syntax error, token={0!s}".format(errtoken.type))
                         else:
                             sys.stderr.write("yacc: Parse error in input. EOF\n")
                             return
@@ -804,9 +804,9 @@ class LRParser:
                             if hasattr(errtoken,"lineno"): lineno = lookahead.lineno
                             else: lineno = 0
                             if lineno:
-                                sys.stderr.write("yacc: Syntax error at line %d, token=%s\n" % (lineno, errtoken.type))
+                                sys.stderr.write("yacc: Syntax error at line {0:d}, token={1!s}\n".format(lineno, errtoken.type))
                             else:
-                                sys.stderr.write("yacc: Syntax error, token=%s" % errtoken.type)
+                                sys.stderr.write("yacc: Syntax error, token={0!s}".format(errtoken.type))
                         else:
                             sys.stderr.write("yacc: Parse error in input. EOF\n")
                             return
@@ -1059,9 +1059,9 @@ class LRParser:
                             if hasattr(errtoken,"lineno"): lineno = lookahead.lineno
                             else: lineno = 0
                             if lineno:
-                                sys.stderr.write("yacc: Syntax error at line %d, token=%s\n" % (lineno, errtoken.type))
+                                sys.stderr.write("yacc: Syntax error at line {0:d}, token={1!s}\n".format(lineno, errtoken.type))
                             else:
-                                sys.stderr.write("yacc: Syntax error, token=%s" % errtoken.type)
+                                sys.stderr.write("yacc: Syntax error, token={0!s}".format(errtoken.type))
                         else:
                             sys.stderr.write("yacc: Parse error in input. EOF\n")
                             return
@@ -1177,9 +1177,9 @@ class Production(object):
 
         # Create a string representation
         if self.prod:
-            self.str = "%s -> %s" % (self.name," ".join(self.prod))
+            self.str = "{0!s} -> {1!s}".format(self.name, " ".join(self.prod))
         else:
-            self.str = "%s -> <empty>" % self.name
+            self.str = "{0!s} -> <empty>".format(self.name)
 
     def __str__(self):
         return self.str
@@ -1234,7 +1234,7 @@ class MiniProduction(object):
     def __str__(self):
         return self.str
     def __repr__(self):
-        return "MiniProduction(%s)" % self.str
+        return "MiniProduction({0!s})".format(self.str)
 
     # Bind the production function name to a callable
     def bind(self,pdict):
@@ -1280,9 +1280,9 @@ class LRItem(object):
 
     def __str__(self):
         if self.prod:
-            s = "%s -> %s" % (self.name," ".join(self.prod))
+            s = "{0!s} -> {1!s}".format(self.name, " ".join(self.prod))
         else:
-            s = "%s -> <empty>" % self.name
+            s = "{0!s} -> <empty>".format(self.name)
         return s
 
     def __repr__(self):
@@ -1365,7 +1365,7 @@ class Grammar(object):
     def set_precedence(self,term,assoc,level):
         assert self.Productions == [None],"Must call set_precedence() before add_production()"
         if term in self.Precedence:
-            raise GrammarError("Precedence already specified for terminal '%s'" % term)
+            raise GrammarError("Precedence already specified for terminal '{0!s}'".format(term))
         if assoc not in ['left','right','nonassoc']:
             raise GrammarError("Associativity must be one of 'left','right', or 'nonassoc'")
         self.Precedence[term] = (assoc,level)
@@ -1390,11 +1390,11 @@ class Grammar(object):
     def add_production(self,prodname,syms,func=None,file='',line=0):
 
         if prodname in self.Terminals:
-            raise GrammarError("%s:%d: Illegal rule name '%s'. Already defined as a token" % (file,line,prodname))
+            raise GrammarError("{0!s}:{1:d}: Illegal rule name '{2!s}'. Already defined as a token".format(file, line, prodname))
         if prodname == 'error':
-            raise GrammarError("%s:%d: Illegal rule name '%s'. error is a reserved word" % (file,line,prodname))
+            raise GrammarError("{0!s}:{1:d}: Illegal rule name '{2!s}'. error is a reserved word".format(file, line, prodname))
         if not _is_identifier.match(prodname):
-            raise GrammarError("%s:%d: Illegal rule name '%s'" % (file,line,prodname))
+            raise GrammarError("{0!s}:{1:d}: Illegal rule name '{2!s}'".format(file, line, prodname))
 
         # Look for literal tokens 
         for n,s in enumerate(syms):
@@ -1402,7 +1402,7 @@ class Grammar(object):
                  try:
                      c = eval(s)
                      if (len(c) > 1):
-                          raise GrammarError("%s:%d: Literal token %s in rule '%s' may only be a single character" % (file,line,s, prodname))
+                          raise GrammarError("{0!s}:{1:d}: Literal token {2!s} in rule '{3!s}' may only be a single character".format(file, line, s, prodname))
                      if not c in self.Terminals:
                           self.Terminals[c] = []
                      syms[n] = c
@@ -1410,18 +1410,18 @@ class Grammar(object):
                  except SyntaxError:
                      pass
             if not _is_identifier.match(s) and s != '%prec':
-                raise GrammarError("%s:%d: Illegal name '%s' in rule '%s'" % (file,line,s, prodname))
+                raise GrammarError("{0!s}:{1:d}: Illegal name '{2!s}' in rule '{3!s}'".format(file, line, s, prodname))
         
         # Determine the precedence level
         if '%prec' in syms:
             if syms[-1] == '%prec':
-                raise GrammarError("%s:%d: Syntax error. Nothing follows %%prec" % (file,line))
+                raise GrammarError("{0!s}:{1:d}: Syntax error. Nothing follows %prec".format(file, line))
             if syms[-2] != '%prec':
-                raise GrammarError("%s:%d: Syntax error. %%prec can only appear at the end of a grammar rule" % (file,line))
+                raise GrammarError("{0!s}:{1:d}: Syntax error. %prec can only appear at the end of a grammar rule".format(file, line))
             precname = syms[-1]
             prodprec = self.Precedence.get(precname,None)
             if not prodprec:
-                raise GrammarError("%s:%d: Nothing known about the precedence of '%s'" % (file,line,precname))
+                raise GrammarError("{0!s}:{1:d}: Nothing known about the precedence of '{2!s}'".format(file, line, precname))
             else:
                 self.UsedPrecedence[precname] = 1
             del syms[-2:]     # Drop %prec from the rule
@@ -1431,11 +1431,11 @@ class Grammar(object):
             prodprec = self.Precedence.get(precname,('right',0)) 
             
         # See if the rule is already in the rulemap
-        map = "%s -> %s" % (prodname,syms)
+        map = "{0!s} -> {1!s}".format(prodname, syms)
         if map in self.Prodmap:
             m = self.Prodmap[map]
-            raise GrammarError("%s:%d: Duplicate rule %s. " % (file,line, m) +
-                               "Previous definition at %s:%d" % (m.file, m.line))
+            raise GrammarError("{0!s}:{1:d}: Duplicate rule {2!s}. ".format(file, line, m) +
+                               "Previous definition at {0!s}:{1:d}".format(m.file, m.line))
 
         # From this point on, everything is valid.  Create a new Production instance
         pnumber  = len(self.Productions)
@@ -1474,7 +1474,7 @@ class Grammar(object):
         if not start:
             start = self.Productions[1].name
         if start not in self.Nonterminals:
-            raise GrammarError("start symbol %s undefined" % start)
+            raise GrammarError("start symbol {0!s} undefined".format(start))
         self.Productions[0] = Production(0,"S'",[start])
         self.Nonterminals[start].append(0)
         self.Start = start
@@ -1823,10 +1823,10 @@ class LRTable(object):
             parsetab = module
         else:
             if sys.version_info[0] < 3:
-                exec("import %s as parsetab" % module)
+                exec("import {0!s} as parsetab".format(module))
             else:
                 env = { }
-                exec("import %s as parsetab" % module, env, env)
+                exec("import {0!s} as parsetab".format(module), env, env)
                 parsetab = env['parsetab']
 
         if parsetab._tabversion != __tabversion__:
@@ -1939,7 +1939,7 @@ class LALRError(YaccError): pass
 class LRGeneratedTable(LRTable):
     def __init__(self,grammar,method='LALR',log=None):
         if method not in ['SLR','LALR']:
-            raise LALRError("Unsupported method %s" % method)
+            raise LALRError("Unsupported method {0!s}".format(method))
 
         self.grammar = grammar
         self.lr_method = method
@@ -2406,7 +2406,7 @@ class LRGeneratedTable(LRTable):
                             else:
                                 laheads = self.grammar.Follow[p.name]
                             for a in laheads:
-                                actlist.append((a,p,"reduce using rule %d (%s)" % (p.number,p)))
+                                actlist.append((a,p,"reduce using rule {0:d} ({1!s})".format(p.number, p)))
                                 r = st_action.get(a,None)
                                 if r is not None:
                                     # Whoa. Have a shift/reduce or reduce/reduce conflict
@@ -2447,7 +2447,7 @@ class LRGeneratedTable(LRTable):
                                         self.rr_conflicts.append((st,chosenp,rejectp))
                                         log.info("  ! reduce/reduce conflict for %s resolved using rule %d (%s)", a,st_actionp[a].number, st_actionp[a])
                                     else:
-                                        raise LALRError("Unknown conflict in state %d" % st)
+                                        raise LALRError("Unknown conflict in state {0:d}".format(st))
                                 else:
                                     st_action[a] = -p.number
                                     st_actionp[a] = p
@@ -2460,13 +2460,13 @@ class LRGeneratedTable(LRTable):
                             j = self.lr0_cidhash.get(id(g),-1)
                             if j >= 0:
                                 # We are in a shift state
-                                actlist.append((a,p,"shift and go to state %d" % j))
+                                actlist.append((a,p,"shift and go to state {0:d}".format(j)))
                                 r = st_action.get(a,None)
                                 if r is not None:
                                     # Whoa have a shift/reduce or shift/shift conflict
                                     if r > 0:
                                         if r != j:
-                                            raise LALRError("Shift/shift conflict in state %d" % st)
+                                            raise LALRError("Shift/shift conflict in state {0:d}".format(st))
                                     elif r < 0:
                                         # Do a precedence check.
                                         #   -  if precedence of reduce rule is higher, we reduce.
@@ -2491,7 +2491,7 @@ class LRGeneratedTable(LRTable):
                                                 self.sr_conflicts.append((st,a,'reduce'))
 
                                     else:
-                                        raise LALRError("Unknown conflict in state %d" % st)
+                                        raise LALRError("Unknown conflict in state {0:d}".format(st))
                                 else:
                                     st_action[a] = j
                                     st_actionp[a] = p
@@ -2549,14 +2549,14 @@ class LRGeneratedTable(LRTable):
             f = open(filename,"w")
 
             f.write("""
-# %s
+# {0!s}
 # This file is automatically generated. Do not edit.
-_tabversion = %r
+_tabversion = {1!r}
 
-_lr_method = %r
+_lr_method = {2!r}
 
-_lr_signature = %r
-    """ % (filename, __tabversion__, self.lr_method, signature))
+_lr_signature = {3!r}
+    """.format(filename, __tabversion__, self.lr_method, signature))
 
             # Change smaller to 0 to go back to original tables
             smaller = 1
@@ -2576,12 +2576,12 @@ _lr_signature = %r
 
                 f.write("\n_lr_action_items = {")
                 for k,v in items.items():
-                    f.write("%r:([" % k)
+                    f.write("{0!r}:([".format(k))
                     for i in v[0]:
-                        f.write("%r," % i)
+                        f.write("{0!r},".format(i))
                     f.write("],[")
                     for i in v[1]:
-                        f.write("%r," % i)
+                        f.write("{0!r},".format(i))
 
                     f.write("]),")
                 f.write("}\n")
@@ -2598,7 +2598,7 @@ del _lr_action_items
             else:
                 f.write("\n_lr_action = { ");
                 for k,v in self.lr_action.items():
-                    f.write("(%r,%r):%r," % (k[0],k[1],v))
+                    f.write("({0!r},{1!r}):{2!r},".format(k[0], k[1], v))
                 f.write("}\n");
 
             if smaller:
@@ -2616,12 +2616,12 @@ del _lr_action_items
 
                 f.write("\n_lr_goto_items = {")
                 for k,v in items.items():
-                    f.write("%r:([" % k)
+                    f.write("{0!r}:([".format(k))
                     for i in v[0]:
-                        f.write("%r," % i)
+                        f.write("{0!r},".format(i))
                     f.write("],[")
                     for i in v[1]:
-                        f.write("%r," % i)
+                        f.write("{0!r},".format(i))
 
                     f.write("]),")
                 f.write("}\n")
@@ -2637,22 +2637,22 @@ del _lr_goto_items
             else:
                 f.write("\n_lr_goto = { ");
                 for k,v in self.lr_goto.items():
-                    f.write("(%r,%r):%r," % (k[0],k[1],v))
+                    f.write("({0!r},{1!r}):{2!r},".format(k[0], k[1], v))
                 f.write("}\n");
 
             # Write production table
             f.write("_lr_productions = [\n")
             for p in self.lr_productions:
                 if p.func:
-                    f.write("  (%r,%r,%d,%r,%r,%d),\n" % (p.str,p.name, p.len, p.func,p.file,p.line))
+                    f.write("  ({0!r},{1!r},{2:d},{3!r},{4!r},{5:d}),\n".format(p.str, p.name, p.len, p.func, p.file, p.line))
                 else:
-                    f.write("  (%r,%r,%d,None,None,None),\n" % (str(p),p.name, p.len))
+                    f.write("  ({0!r},{1!r},{2:d},None,None,None),\n".format(str(p), p.name, p.len))
             f.write("]\n")
             f.close()
 
         except IOError:
             e = sys.exc_info()[1]
-            sys.stderr.write("Unable to create '%s'\n" % filename)
+            sys.stderr.write("Unable to create '{0!s}'\n".format(filename))
             sys.stderr.write(str(e)+"\n")
             return
 
@@ -2733,7 +2733,7 @@ def parse_grammar(doc,file,line):
             if p[0] == '|':
                 # This is a continuation of a previous rule
                 if not lastp:
-                    raise SyntaxError("%s:%d: Misplaced '|'" % (file,dline))
+                    raise SyntaxError("{0!s}:{1:d}: Misplaced '|'".format(file, dline))
                 prodname = lastp
                 syms = p[1:]
             else:
@@ -2742,13 +2742,13 @@ def parse_grammar(doc,file,line):
                 syms   = p[2:]
                 assign = p[1]
                 if assign != ':' and assign != '::=':
-                    raise SyntaxError("%s:%d: Syntax error. Expected ':'" % (file,dline))
+                    raise SyntaxError("{0!s}:{1:d}: Syntax error. Expected ':'".format(file, dline))
 
             grammar.append((file,dline,prodname,syms))
         except SyntaxError:
             raise
         except Exception:
-            raise SyntaxError("%s:%d: Syntax error in rule '%s'" % (file,dline,ps.strip()))
+            raise SyntaxError("{0!s}:{1:d}: Syntax error in rule '{2!s}'".format(file, dline, ps.strip()))
 
     return grammar
 

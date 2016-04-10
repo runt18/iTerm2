@@ -61,7 +61,7 @@ class BasicInterpreter:
                             self.loopend[pc] = i
                             break
                   else:
-                       print("FOR WITHOUT NEXT AT LINE %s" % self.stat[pc])
+                       print("FOR WITHOUT NEXT AT LINE {0!s}".format(self.stat[pc]))
                        self.error = 1
                   
     # Evaluate an expression
@@ -83,7 +83,7 @@ class BasicInterpreter:
                   if var in self.vars:
                        return self.vars[var]
                   else:
-                       print("UNDEFINED VARIABLE %s AT LINE %s" % (var, self.stat[self.pc]))
+                       print("UNDEFINED VARIABLE {0!s} AT LINE {1!s}".format(var, self.stat[self.pc]))
                        raise RuntimeError
              # May be a list lookup or a function evaluation
              if dim1 and not dim2:
@@ -95,7 +95,7 @@ class BasicInterpreter:
                       if var in self.lists:
                             dim1val = self.eval(dim1)
                             if dim1val < 1 or dim1val > len(self.lists[var]):
-                                 print("LIST INDEX OUT OF BOUNDS AT LINE %s" % self.stat[self.pc])
+                                 print("LIST INDEX OUT OF BOUNDS AT LINE {0!s}".format(self.stat[self.pc]))
                                  raise RuntimeError
                             return self.lists[var][dim1val-1]
              if dim1 and dim2:
@@ -103,10 +103,10 @@ class BasicInterpreter:
                       dim1val = self.eval(dim1)
                       dim2val = self.eval(dim2)
                       if dim1val < 1 or dim1val > len(self.tables[var]) or dim2val < 1 or dim2val > len(self.tables[var][0]):
-                           print("TABLE INDEX OUT OUT BOUNDS AT LINE %s" % self.stat[self.pc])
+                           print("TABLE INDEX OUT OUT BOUNDS AT LINE {0!s}".format(self.stat[self.pc]))
                            raise RuntimeError
                       return self.tables[var][dim1val-1][dim2val-1]
-             print("UNDEFINED VARIABLE %s AT LINE %s" % (var, self.stat[self.pc]))
+             print("UNDEFINED VARIABLE {0!s} AT LINE {1!s}".format(var, self.stat[self.pc]))
              raise RuntimeError
 
     # Evaluate a relational expression
@@ -150,7 +150,7 @@ class BasicInterpreter:
                  self.lists[var] = [0]*10
 
             if dim1val > len(self.lists[var]):
-                 print ("DIMENSION TOO LARGE AT LINE %s" % self.stat[self.pc])
+                 print ("DIMENSION TOO LARGE AT LINE {0!s}".format(self.stat[self.pc]))
                  raise RuntimeError
             self.lists[var][dim1val-1] = self.eval(value)
         elif dim1 and dim2:
@@ -163,14 +163,14 @@ class BasicInterpreter:
                  self.tables[var] = v
             # Variable already exists
             if dim1val > len(self.tables[var]) or dim2val > len(self.tables[var][0]):
-                 print("DIMENSION TOO LARGE AT LINE %s" % self.stat[self.pc])
+                 print("DIMENSION TOO LARGE AT LINE {0!s}".format(self.stat[self.pc]))
                  raise RuntimeError
             self.tables[var][dim1val-1][dim2val-1] = self.eval(value)
 
     # Change the current line number
     def goto(self,linenum):
          if not linenum in self.prog:
-              print("UNDEFINED LINE NUMBER %d AT LINE %d" % (linenum, self.stat[self.pc]))
+              print("UNDEFINED LINE NUMBER {0:d} AT LINE {1:d}".format(linenum, self.stat[self.pc]))
               raise RuntimeError
          self.pc = self.stat.index(linenum)
 
@@ -285,7 +285,7 @@ class BasicInterpreter:
 
             elif op == 'NEXT':
                  if not self.loops:
-                       print("NEXT WITHOUT FOR AT LINE %s" % line)
+                       print("NEXT WITHOUT FOR AT LINE {0!s}".format(line))
                        return
  
                  nextvar = instr[1]
@@ -293,13 +293,13 @@ class BasicInterpreter:
                  loopinst = self.prog[self.stat[self.pc]]
                  forvar = loopinst[1]
                  if nextvar != forvar:
-                       print("NEXT DOESN'T MATCH FOR AT LINE %s" % line)
+                       print("NEXT DOESN'T MATCH FOR AT LINE {0!s}".format(line))
                        return
                  continue
             elif op == 'GOSUB':
                  newline = instr[1]
                  if self.gosub:
-                       print("ALREADY IN A SUBROUTINE AT LINE %s" % line)
+                       print("ALREADY IN A SUBROUTINE AT LINE {0!s}".format(line))
                        return
                  self.gosub = self.stat[self.pc]
                  self.goto(newline)
@@ -307,7 +307,7 @@ class BasicInterpreter:
 
             elif op == 'RETURN':
                  if not self.gosub:
-                      print("RETURN WITHOUT A GOSUB AT LINE %s" % line)
+                      print("RETURN WITHOUT A GOSUB AT LINE {0!s}".format(line))
                       return
                  self.goto(self.gosub)
                  self.gosub = None
@@ -340,22 +340,22 @@ class BasicInterpreter:
     def expr_str(self,expr):
         etype = expr[0]
         if etype == 'NUM': return str(expr[1])
-        elif etype == 'GROUP': return "(%s)" % self.expr_str(expr[1])
+        elif etype == 'GROUP': return "({0!s})".format(self.expr_str(expr[1]))
         elif etype == 'UNARY':
              if expr[1] == '-': return "-"+str(expr[2])
         elif etype == 'BINOP':
-             return "%s %s %s" % (self.expr_str(expr[2]),expr[1],self.expr_str(expr[3]))
+             return "{0!s} {1!s} {2!s}".format(self.expr_str(expr[2]), expr[1], self.expr_str(expr[3]))
         elif etype == 'VAR':
               return self.var_str(expr[1])
 
     def relexpr_str(self,expr):
-         return "%s %s %s" % (self.expr_str(expr[2]),expr[1],self.expr_str(expr[3]))
+         return "{0!s} {1!s} {2!s}".format(self.expr_str(expr[2]), expr[1], self.expr_str(expr[3]))
 
     def var_str(self,var):
          varname,dim1,dim2 = var
          if not dim1 and not dim2: return varname
-         if dim1 and not dim2: return "%s(%s)" % (varname, self.expr_str(dim1))
-         return "%s(%s,%s)" % (varname, self.expr_str(dim1),self.expr_str(dim2))
+         if dim1 and not dim2: return "{0!s}({1!s})".format(varname, self.expr_str(dim1))
+         return "{0!s}({1!s},{2!s})".format(varname, self.expr_str(dim1), self.expr_str(dim2))
 
     # Create a program listing
     def list(self):
@@ -365,25 +365,25 @@ class BasicInterpreter:
              instr = self.prog[line]
              op = instr[0]
              if op in ['END','STOP','RETURN']:
-                   print("%s %s" % (line, op))
+                   print("{0!s} {1!s}".format(line, op))
                    continue
              elif op == 'REM':
-                   print("%s %s" % (line, instr[1]))
+                   print("{0!s} {1!s}".format(line, instr[1]))
              elif op == 'PRINT':
-                   _out = "%s %s " % (line, op)
+                   _out = "{0!s} {1!s} ".format(line, op)
                    first = 1
                    for p in instr[1]:
                          if not first: _out += ", "
-                         if p[0] and p[1]: _out += '"%s"%s' % (p[0],self.expr_str(p[1]))
+                         if p[0] and p[1]: _out += '"{0!s}"{1!s}'.format(p[0], self.expr_str(p[1]))
                          elif p[1]: _out += self.expr_str(p[1])
-                         else: _out += '"%s"' % (p[0],)
+                         else: _out += '"{0!s}"'.format(p[0])
                          first = 0
                    if instr[2]: _out += instr[2]
                    print(_out)
              elif op == 'LET':
-                   print("%s LET %s = %s" % (line,self.var_str(instr[1]),self.expr_str(instr[2])))
+                   print("{0!s} LET {1!s} = {2!s}".format(line, self.var_str(instr[1]), self.expr_str(instr[2])))
              elif op == 'READ':
-                   _out = "%s READ " % line
+                   _out = "{0!s} READ ".format(line)
                    first = 1
                    for r in instr[1]:
                          if not first: _out += ","
@@ -391,31 +391,31 @@ class BasicInterpreter:
                          first = 0
                    print(_out)
              elif op == 'IF':
-                   print("%s IF %s THEN %d" % (line,self.relexpr_str(instr[1]),instr[2]))
+                   print("{0!s} IF {1!s} THEN {2:d}".format(line, self.relexpr_str(instr[1]), instr[2]))
              elif op == 'GOTO' or op == 'GOSUB':
-                   print("%s %s %s" % (line, op, instr[1]))
+                   print("{0!s} {1!s} {2!s}".format(line, op, instr[1]))
              elif op == 'FOR':
-                   _out = "%s FOR %s = %s TO %s" % (line,instr[1],self.expr_str(instr[2]),self.expr_str(instr[3]))
-                   if instr[4]: _out += " STEP %s" % (self.expr_str(instr[4]))
+                   _out = "{0!s} FOR {1!s} = {2!s} TO {3!s}".format(line, instr[1], self.expr_str(instr[2]), self.expr_str(instr[3]))
+                   if instr[4]: _out += " STEP {0!s}".format((self.expr_str(instr[4])))
                    print(_out)
              elif op == 'NEXT':
-                   print("%s NEXT %s" % (line, instr[1]))
+                   print("{0!s} NEXT {1!s}".format(line, instr[1]))
              elif op == 'FUNC':
-                   print("%s DEF %s(%s) = %s" % (line,instr[1],instr[2],self.expr_str(instr[3])))
+                   print("{0!s} DEF {1!s}({2!s}) = {3!s}".format(line, instr[1], instr[2], self.expr_str(instr[3])))
              elif op == 'DIM':
-                   _out = "%s DIM " % line
+                   _out = "{0!s} DIM ".format(line)
                    first = 1
                    for vname,x,y in instr[1]:
                          if not first: _out += ","
                          first = 0
                          if y == 0:
-                               _out += "%s(%d)" % (vname,x)
+                               _out += "{0!s}({1:d})".format(vname, x)
                          else:
-                               _out += "%s(%d,%d)" % (vname,x,y)
+                               _out += "{0!s}({1:d},{2:d})".format(vname, x, y)
                          
                    print(_out)
              elif op == 'DATA':
-                   _out = "%s DATA " % line
+                   _out = "{0!s} DATA ".format(line)
                    first = 1
                    for v in instr[1]:
                         if not first: _out += ","

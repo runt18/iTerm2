@@ -64,7 +64,7 @@ def p_expression_name(t):
     try:
         t[0] = names[t[1]]
     except LookupError:
-        print("Undefined name '%s'" % t[1])
+        print("Undefined name '{0!s}'".format(t[1]))
         t[0] = 0
 
 def p_error(t):

@@ -95,7 +95,7 @@ def t_code_error(t):
     raise RuntimeError
 
 def t_error(t):
-    print "%d: Illegal character '%s'" % (t.lexer.lineno, t.value[0])
+    print "{0:d}: Illegal character '{1!s}'".format(t.lexer.lineno, t.value[0])
     print t.value
     t.lexer.skip(1)
 

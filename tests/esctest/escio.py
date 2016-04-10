@@ -128,7 +128,7 @@ def ReadCSI(expected_final, expected_prefix=None):
     if c == expected_prefix:
       c = read(1)
     else:
-      raise esctypes.InternalError("Unexpected character 0x%02x" % ord(c))
+      raise esctypes.InternalError("Unexpected character 0x{0:02x}".format(ord(c)))
 
   while True:
     if c == ";":
