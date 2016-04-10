@@ -1,6 +1,6 @@
 class ChecksumException(Exception):
   def __init__(self, points, actual, expected):
-    message = "Checksum failed at the following locations:\n%s\nActual:\n%s\n\nExpected:\n%s" % (
+    message = "Checksum failed at the following locations:\n{0!s}\nActual:\n{1!s}\n\nExpected:\n{2!s}".format(
         "\n".join(map(str, points)),
         "\n".join(actual),
         "\n".join(expected))
@@ -8,12 +8,12 @@ class ChecksumException(Exception):
 
 class BadResponse(Exception):
   def __init__(self, actual, expected):
-    message = "Bad response from server. Expected '%s' but got '%s'" % (expected, actual)
+    message = "Bad response from server. Expected '{0!s}' but got '{1!s}'".format(expected, actual)
     super(BadResponse, self).__init__(message)
 
 class TestFailure(Exception):
   def __init__(self, actual, expected, details=None):
-    message = "Test failed: expected '%s' but got '%s'" % (str(expected), str(actual))
+    message = "Test failed: expected '{0!s}' but got '{1!s}'".format(str(expected), str(actual))
     if details is not None:
       message += ". " + details
     super(TestFailure, self).__init__(message)
@@ -32,7 +32,7 @@ class BrokenTest(Exception):
 
 class InsufficientVTLevel(Exception):
   def __init(self, actualLevel, minimumLevel):
-    reason = "Terminal implements VT level %d but %d is needed." % (
+    reason = "Terminal implements VT level {0:d} but {1:d} is needed.".format(
         actualLevel, minimumLevel)
     super(InsufficientVTLevel, self).__init__(reason)
 
@@ -42,7 +42,7 @@ class Point(object):
     self._y = y
 
   def __str__(self):
-    return "Point(x=%d, y=%d)" % (self._x, self._y)
+    return "Point(x={0:d}, y={1:d})".format(self._x, self._y)
 
   def x(self):
     return self._x
@@ -66,7 +66,7 @@ class Size(object):
     self._height = height
 
   def __str__(self):
-    return "Size(width=%d, height=%d)" % (self._width, self._height)
+    return "Size(width={0:d}, height={1:d})".format(self._width, self._height)
 
   def width(self):
     return self._width
@@ -92,7 +92,7 @@ class Rect(object):
     self._bottom = bottom
 
   def __str__(self):
-    return "Rect(left=%d, top=%d, right=%d, bottom=%d)" % (
+    return "Rect(left={0:d}, top={1:d}, right={2:d}, bottom={3:d})".format(
         self._left, self._top, self._right, self._bottom)
 
   def left(self):

@@ -43,7 +43,7 @@ def p_definition_literal(p):
 
 def p_definition_start(p):
     '''definition : START ID'''
-    print "start = '%s'" % p[2]
+    print "start = '{0!s}'".format(p[2])
 
 def p_definition_token(p):
     '''definition : toktype opttype idlist optsemi '''
@@ -121,7 +121,7 @@ def p_rules(p):
     rulecount = 1
     for r in rule[1]:
         # r contains one of the rule possibilities
-        print "def p_%s_%d(p):" % (rulename,rulecount)
+        print "def p_{0!s}_{1:d}(p):".format(rulename, rulecount)
         prod = []
         prodcode = ""
         for i in range(len(r)):
@@ -132,21 +132,21 @@ def p_rules(p):
                       break
                   else:
                       # an embedded action
-                      embed_name = "_embed%d_%s" % (embed_count,rulename)
+                      embed_name = "_embed{0:d}_{1!s}".format(embed_count, rulename)
                       prod.append(embed_name)
                       embedded.append((embed_name,item))
                       embed_count += 1
              else:
                   prod.append(item)
-        print "    '''%s : %s'''" % (rulename, " ".join(prod))
+        print "    '''{0!s} : {1!s}'''".format(rulename, " ".join(prod))
         # Emit code
         print_code(prodcode,4)
         print
         rulecount += 1
 
     for e,code in embedded:
-        print "def p_%s(p):" % e
-        print "    '''%s : '''" % e
+        print "def p_{0!s}(p):".format(e)
+        print "    '''{0!s} : '''".format(e)
         print_code(code,4)
         print
 
@@ -213,5 +213,5 @@ def print_code(code,indent):
     if not emit_code: return
     codelines = code.splitlines()
     for c in codelines:
-         print "%s# %s" % (" "*indent,c)
+         print "{0!s}# {1!s}".format(" "*indent, c)
 

@@ -3,13 +3,13 @@ from __future__ import print_function
 
 def PrintTableHeader(fg):
   for num, name in fg:
-    print("%-7s " % name, end="")
+    print("{0:<7!s} ".format(name), end="")
 
 def Clear():
     print("%c[39;49m " % 27, end="")
 
 def PrintRowLabel(index, bg):
-  print("%9s " % bg[index][1], end="")
+  print("{0:9!s} ".format(bg[index][1]), end="")
 
 def PrintCell(fi, bi, fg, bg):
   print("%c[%d;%dm%-9s " % (27, bg[bi][0], fg[fi][0], u"Abc\u2605".encode('utf-8')), end="")
@@ -59,14 +59,14 @@ print()
 for bg in (dbg, lbg):
   print("%9s %c[1m" % ("", 27), end="")
   for fg in (dfg, lfg):
-    print("%25s%-40s" % ("", titles[t]), end="")
+    print("{0:25!s}{1:<40!s}".format("", titles[t]), end="")
     PrintMargin()
     print(" ", end="")
     t += 1
   print("%9s %c[0m" % ("", 27), end="")
 
   print()
-  print("%9s " % "", end="")
+  print("{0:9!s} ".format(""), end="")
   for fg in (dfg, lfg):
     PrintTableHeader(fg)
     PrintMargin()

@@ -2,11 +2,11 @@
 import sys, time
 
 def usage():
-  print "usage: %s [-d delay] [-r count] file [file ...]" % (sys.argv[0])
+  print "usage: {0!s} [-d delay] [-r count] file [file ...]".format((sys.argv[0]))
   print "delay: delay in seconds"
   print "count: number of times to repeat printing files"
   print ""
-  print "example: %s -d .02 logfile.txt" % (sys.argv[0])
+  print "example: {0!s} -d .02 logfile.txt".format((sys.argv[0]))
   sys.exit()
 
 delay = .02

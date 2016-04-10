@@ -88,7 +88,7 @@ def AssertScreenCharsInRectEqual(rect, expected_lines):
 
   if rect.height() != len(expected_lines):
     raise esctypes.InternalError(
-        "Height of rect (%d) does not match number of expected lines (%d)" % (
+        "Height of rect ({0:d}) does not match number of expected lines ({1:d})".format(
           rect.height(),
           len(expected_lines)))
 

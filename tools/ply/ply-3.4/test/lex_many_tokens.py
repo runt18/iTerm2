@@ -8,13 +8,13 @@ if ".." not in sys.path: sys.path.insert(0,"..")
 
 import ply.lex as lex
 
-tokens = ["TOK%d" % i for i in range(1000)]
+tokens = ["TOK{0:d}".format(i) for i in range(1000)]
 
 for tok in tokens:
     if sys.version_info[0] < 3:
-        exec("t_%s = '%s:'" % (tok,tok))
+        exec("t_{0!s} = '{1!s}:'".format(tok, tok))
     else:
-        exec("t_%s = '%s:'" % (tok,tok), globals())
+        exec("t_{0!s} = '{1!s}:'".format(tok, tok), globals())
 
 t_ignore = " \t"
 

@@ -9,7 +9,7 @@ struct {
 
 # length of the shortest allowed range
 def p(a, b):
-  return "{ %s, %s }, " % (hex(a), hex(b))
+  return "{{ {0!s}, {1!s} }}, ".format(hex(a), hex(b))
 
 values = []
 

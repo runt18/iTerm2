@@ -37,7 +37,7 @@ def t_newline(t):
     t.lexer.lineno += t.value.count("\n")
 
 def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
+    print("Illegal character '{0!s}'".format(t.value[0]))
     t.lexer.skip(1)
 
 # Build the lexer
@@ -63,7 +63,7 @@ def p_dict_value(t):
     if len(t) == 1:
       t[0] = ""
     else:
-      t[0] = "%s<key>%s</key>\n%s\n" % (t[1], t[2], t[4])
+      t[0] = "{0!s}<key>{1!s}</key>\n{2!s}\n".format(t[1], t[2], t[4])
 
 def p_key(t):
     '''key : WORD
@@ -86,7 +86,7 @@ def p_value(t):
 
 def p_tuple_value(t):
    'tuple_value : BEGIN_TUPLE tuple_entries END_TUPLE'
-   t[0] = "<array>%s</array>" % t[2]
+   t[0] = "<array>{0!s}</array>".format(t[2])
 
 def p_tuple_entries(t):
    '''tuple_entries : value tuple_entries
@@ -94,11 +94,11 @@ def p_tuple_entries(t):
    if len(t) == 2:
      t[0] = t[1]
    else:
-     t[0] = "%s\n%s" % (t[1], t[2])
+     t[0] = "{0!s}\n{1!s}".format(t[1], t[2])
 
 def p_array_value(t):
    'array_value : BEGIN_ARRAY array_entries END_ARRAY'
-   t[0] = "<array>%s</array>" % t[2]
+   t[0] = "<array>{0!s}</array>".format(t[2])
 
 def p_array_entries(t):
    '''array_entries : value COMMA array_entries
@@ -109,15 +109,15 @@ def p_array_entries(t):
    elif len(t) == 2:
      t[0] = t[1]
    else:
-     t[0] = "%s\n%s" % (t[1], t[3])
+     t[0] = "{0!s}\n{1!s}".format(t[1], t[3])
 
 def p_ambiguous_value(t):
    'ambiguous_value : WORD'
    try:
      i = int(t[1])
-     t[0] = "<integer>%s</integer>" % i
+     t[0] = "<integer>{0!s}</integer>".format(i)
    except ValueError:
-     t[0] = "<string>%s</string>" % t[1]
+     t[0] = "<string>{0!s}</string>".format(t[1])
 
 def RejiggerDate(d):
   parts = d.split(" ")
@@ -136,19 +136,19 @@ def RejiggerDate(d):
 
 def p_date_value(t):
     'date_value : DATE TIME WORD'
-    t[0] = "<date>%s</date>" % RejiggerDate("%s %s %s" % (t[1], t[2], t[3]))
+    t[0] = "<date>{0!s}</date>".format(RejiggerDate("{0!s} {1!s} {2!s}".format(t[1], t[2], t[3])))
 
 def p_string_value(t):
     'string_value : quoted_phrase'
-    t[0] = "<string>%s</string>" % t[1]
+    t[0] = "<string>{0!s}</string>".format(t[1])
 
 def p_real_value(t):
    'real_value : REAL'
-   t[0] = "<real>%s</real>" % t[1]
+   t[0] = "<real>{0!s}</real>".format(t[1])
 
 def p_block_value(t):
     'block_value : BEGIN_BLOCK dict_value END_BLOCK'
-    t[0] = "<dict>\n%s</dict>" % t[2]
+    t[0] = "<dict>\n{0!s}</dict>".format(t[2])
 
 def p_error(t):
     print("Syntax error at ", t)

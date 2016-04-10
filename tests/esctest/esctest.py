@@ -114,7 +114,7 @@ def RunTest(name, method):
     RemoveSideChannel()
     tb = traceback.format_exc()
     ok = False
-    esclog.LogError("*** TEST %s FAILED:" % name)
+    esclog.LogError("*** TEST {0!s} FAILED:".format(name))
     esclog.LogError(tb)
   esclog.LogInfo("")
   return ok
@@ -137,7 +137,7 @@ def MatchingNamesAndMethods():
           re.search(escargs.args.include, full_name)):
         yield full_name, method
       else:
-        esclog.LogDebug("Skipping test %s" % full_name)
+        esclog.LogDebug("Skipping test {0!s}".format(full_name))
 
 def PerformAction():
   if escargs.args.action == escargs.ACTION_RUN:
@@ -149,7 +149,7 @@ def ListKnownBugs():
   for name, method in MatchingNamesAndMethods():
     reason = CheckForKnownBug(name, method)
     if reason is not None:
-      esclog.LogInfo("%s: %s" % (name, reason))
+      esclog.LogInfo("{0!s}: {1!s}".format(name, reason))
 
 def RunTests():
   failed = 0
@@ -171,14 +171,14 @@ def RunTests():
 
   if failed > 0:
     esclog.LogInfo(
-        "*** %s passed, %s, %s FAILED ***" % (
+        "*** {0!s} passed, {1!s}, {2!s} FAILED ***".format(
           plural("test", passed),
           plural("known bug", knownBugs),
           plural("TEST", failed, caps=True)))
     esclog.LogInfo("Failing tests:\n" + "\n".join(failures))
   else:
     esclog.LogInfo(
-        "*** %s passed, %s, %s failed ***" % (
+        "*** {0!s} passed, {1!s}, {2!s} failed ***".format(
           plural("test", passed),
           plural("known bug", knownBugs),
           plural("test", failed)))

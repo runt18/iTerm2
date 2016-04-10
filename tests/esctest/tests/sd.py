@@ -57,7 +57,7 @@ class SDTests(object):
     for i in xrange(height):
       y = i + 1
       esccmd.CUP(Point(1, y))
-      escio.Write("%04d" % y)
+      escio.Write("{0:04d}".format(y))
       expected_lines.append(NUL * 4)
 
     # Scroll by |height|

@@ -66,7 +66,7 @@ class ILTests(object):
     height = GetScreenSize().height()
     for i in xrange(height):
       esccmd.CUP(Point(1, i + 1))
-      escio.Write("%04d" % (i + 1))
+      escio.Write("{0:04d}".format((i + 1)))
     esccmd.CUP(Point(1, 2))
     esccmd.IL()
 
@@ -76,7 +76,7 @@ class ILTests(object):
       if y == 2:
         AssertScreenCharsInRectEqual(Rect(1, y, 4, y), [ NUL * 4 ])
       else:
-        AssertScreenCharsInRectEqual(Rect(1, y, 4, y), [ "%04d" % expected ])
+        AssertScreenCharsInRectEqual(Rect(1, y, 4, y), [ "{0:04d}".format(expected) ])
         expected += 1
 
   def test_IL_RespectsScrollRegion(self):

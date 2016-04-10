@@ -82,7 +82,7 @@ class Calc(Parser):
         try:
             t.value = int(t.value)
         except ValueError:
-            print("Integer value too large %s" % t.value)
+            print("Integer value too large {0!s}".format(t.value))
             t.value = 0
         #print "parsed number %s" % repr(t.value)
         return t
@@ -94,7 +94,7 @@ class Calc(Parser):
         t.lexer.lineno += t.value.count("\n")
     
     def t_error(self, t):
-        print("Illegal character '%s'" % t.value[0])
+        print("Illegal character '{0!s}'".format(t.value[0]))
         t.lexer.skip(1)
 
     # Parsing rules
@@ -146,12 +146,12 @@ class Calc(Parser):
         try:
             p[0] = self.names[p[1]]
         except LookupError:
-            print("Undefined name '%s'" % p[1])
+            print("Undefined name '{0!s}'".format(p[1]))
             p[0] = 0
 
     def p_error(self, p):
         if p:
-            print("Syntax error at '%s'" % p.value)
+            print("Syntax error at '{0!s}'".format(p.value))
         else:
             print("Syntax error at EOF")
 

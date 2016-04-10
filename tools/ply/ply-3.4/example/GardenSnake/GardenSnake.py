@@ -145,7 +145,7 @@ def t_RPAR(t):
 
 
 def t_error(t):
-    raise SyntaxError("Unknown symbol %r" % (t.value[0],))
+    raise SyntaxError("Unknown symbol {0!r}".format(t.value[0]))
     print "Skipping", repr(t.value[0])
     t.lexer.skip(1)
 

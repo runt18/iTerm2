@@ -12,7 +12,7 @@ class DLTests(object):
     for i in xrange(height):
       y = i + 1
       esccmd.CUP(Point(1, y))
-      escio.Write("%04d" % y)
+      escio.Write("{0:04d}".format(y))
 
     esccmd.CUP(Point(1, 2))
 
@@ -51,7 +51,7 @@ class DLTests(object):
     expected_lines = []
     for i in xrange(height):
       if y != 2:
-        expected_lines.append("%04d" % y)
+        expected_lines.append("{0:04d}".format(y))
       y += 1
 
     # The last line should be blank
@@ -72,7 +72,7 @@ class DLTests(object):
     expected_lines = []
     for i in xrange(height):
       if y < 2 or y > 3:
-        expected_lines.append("%04d" % y)
+        expected_lines.append("{0:04d}".format(y))
       y += 1
 
     # The last two lines should be blank

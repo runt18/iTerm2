@@ -68,7 +68,7 @@ class LexError(Exception):
 # Token class.  This class is used to represent the tokens produced.
 class LexToken(object):
     def __str__(self):
-        return "LexToken(%s,%r,%d,%d)" % (self.type,self.value,self.lineno,self.lexpos)
+        return "LexToken({0!s},{1!r},{2:d},{3:d})".format(self.type, self.value, self.lineno, self.lexpos)
     def __repr__(self):
         return str(self)
 
@@ -174,12 +174,12 @@ class Lexer:
         basetabfilename = tabfile.split(".")[-1]
         filename = os.path.join(outputdir,basetabfilename)+".py"
         tf = open(filename,"w")
-        tf.write("# %s.py. This file automatically created by PLY (version %s). Don't edit!\n" % (tabfile,__version__))
-        tf.write("_tabversion   = %s\n" % repr(__version__))
-        tf.write("_lextokens    = %s\n" % repr(self.lextokens))
-        tf.write("_lexreflags   = %s\n" % repr(self.lexreflags))
-        tf.write("_lexliterals  = %s\n" % repr(self.lexliterals))
-        tf.write("_lexstateinfo = %s\n" % repr(self.lexstateinfo))
+        tf.write("# {0!s}.py. This file automatically created by PLY (version {1!s}). Don't edit!\n".format(tabfile, __version__))
+        tf.write("_tabversion   = {0!s}\n".format(repr(__version__)))
+        tf.write("_lextokens    = {0!s}\n".format(repr(self.lextokens)))
+        tf.write("_lexreflags   = {0!s}\n".format(repr(self.lexreflags)))
+        tf.write("_lexliterals  = {0!s}\n".format(repr(self.lexliterals)))
+        tf.write("_lexstateinfo = {0!s}\n".format(repr(self.lexstateinfo)))
 
         tabre = { }
         # Collect all functions in the initial state
@@ -196,8 +196,8 @@ class Lexer:
                   titem.append((self.lexstateretext[key][i],_funcs_to_names(lre[i][1],self.lexstaterenames[key][i])))
              tabre[key] = titem
 
-        tf.write("_lexstatere   = %s\n" % repr(tabre))
-        tf.write("_lexstateignore = %s\n" % repr(self.lexstateignore))
+        tf.write("_lexstatere   = {0!s}\n".format(repr(tabre)))
+        tf.write("_lexstateignore = {0!s}\n".format(repr(self.lexstateignore)))
 
         taberr = { }
         for key, ef in self.lexstateerrorf.items():
@@ -205,7 +205,7 @@ class Lexer:
                   taberr[key] = ef.__name__
              else:
                   taberr[key] = None
-        tf.write("_lexstateerrorf = %s\n" % repr(taberr))
+        tf.write("_lexstateerrorf = {0!s}\n".format(repr(taberr)))
         tf.close()
 
     # ------------------------------------------------------------
@@ -216,10 +216,10 @@ class Lexer:
             lextab = tabfile
         else:
             if sys.version_info[0] < 3:
-                exec("import %s as lextab" % tabfile)
+                exec("import {0!s} as lextab".format(tabfile))
             else:
                 env = { }
-                exec("import %s as lextab" % tabfile, env,env)
+                exec("import {0!s} as lextab".format(tabfile), env,env)
                 lextab = env['lextab']
 
         if getattr(lextab,"_tabversion","0.0") != __version__:
@@ -356,7 +356,7 @@ class Lexer:
                 # Verify type of the token.  If not in the token map, raise an error
                 if not self.lexoptimize:
                     if not newtok.type in self.lextokens:
-                        raise LexError("%s:%d: Rule '%s' returned an unknown token type '%s'" % (
+                        raise LexError("{0!s}:{1:d}: Rule '{2!s}' returned an unknown token type '{3!s}'".format(
                             func_code(func).co_filename, func_code(func).co_firstlineno,
                             func.__name__, newtok.type),lexdata[lexpos:])
 
@@ -384,13 +384,13 @@ class Lexer:
                     newtok = self.lexerrorf(tok)
                     if lexpos == self.lexpos:
                         # Error method didn't change text position at all. This is an error.
-                        raise LexError("Scanning error. Illegal character '%s'" % (lexdata[lexpos]), lexdata[lexpos:])
+                        raise LexError("Scanning error. Illegal character '{0!s}'".format((lexdata[lexpos])), lexdata[lexpos:])
                     lexpos = self.lexpos
                     if not newtok: continue
                     return newtok
 
                 self.lexpos = lexpos
-                raise LexError("Illegal character '%s' at index %d" % (lexdata[lexpos],lexpos), lexdata[lexpos:])
+                raise LexError("Illegal character '{0!s}' at index {1:d}".format(lexdata[lexpos], lexpos), lexdata[lexpos:])
 
         self.lexpos = lexpos + 1
         if self.lexdata is None:
@@ -753,7 +753,7 @@ class LexerReflect(object):
                     continue
 
                 try:
-                    c = re.compile("(?P<%s>%s)" % (fname,f.__doc__), re.VERBOSE | self.reflags)
+                    c = re.compile("(?P<{0!s}>{1!s})".format(fname, f.__doc__), re.VERBOSE | self.reflags)
                     if c.match(""):
                         self.log.error("%s:%d: Regular expression for rule '%s' matches empty string", file,line,f.__name__)
                         self.error = 1
@@ -778,7 +778,7 @@ class LexerReflect(object):
                     continue
 
                 try:
-                    c = re.compile("(?P<%s>%s)" % (name,r),re.VERBOSE | self.reflags)
+                    c = re.compile("(?P<{0!s}>{1!s})".format(name, r),re.VERBOSE | self.reflags)
                     if (c.match("")):
                          self.log.error("Regular expression for rule '%s' matches empty string",name)
                          self.error = 1
@@ -933,13 +933,13 @@ def lex(module=None,object=None,debug=0,optimize=0,lextab="lextab",reflags=0,now
         for fname, f in linfo.funcsym[state]:
             line = func_code(f).co_firstlineno
             file = func_code(f).co_filename
-            regex_list.append("(?P<%s>%s)" % (fname,f.__doc__))
+            regex_list.append("(?P<{0!s}>{1!s})".format(fname, f.__doc__))
             if debug:
                 debuglog.info("lex: Adding rule %s -> '%s' (state '%s')",fname,f.__doc__, state)
 
         # Now add all of the simple rules
         for name,r in linfo.strsym[state]:
-            regex_list.append("(?P<%s>%s)" % (name,r))
+            regex_list.append("(?P<{0!s}>{1!s})".format(name, r))
             if debug:
                 debuglog.info("lex: Adding rule %s -> '%s' (state '%s')",name,r, state)
 
@@ -1035,7 +1035,7 @@ def runmain(lexer=None,data=None):
     while 1:
         tok = _token()
         if not tok: break
-        sys.stdout.write("(%s,%r,%d,%d)\n" % (tok.type, tok.value, tok.lineno,tok.lexpos))
+        sys.stdout.write("({0!s},{1!r},{2:d},{3:d})\n".format(tok.type, tok.value, tok.lineno, tok.lexpos))
 
 # -----------------------------------------------------------------------------
 # @TOKEN(regex)

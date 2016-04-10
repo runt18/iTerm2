@@ -150,8 +150,8 @@ class Preprocessor(object):
         self.lexprobe()
 
         tm = time.localtime()
-        self.define("__DATE__ \"%s\"" % time.strftime("%b %d %Y",tm))
-        self.define("__TIME__ \"%s\"" % time.strftime("%H:%M:%S",tm))
+        self.define("__DATE__ \"{0!s}\"".format(time.strftime("%b %d %Y",tm)))
+        self.define("__TIME__ \"{0!s}\"".format(time.strftime("%H:%M:%S",tm)))
         self.parser = None
 
     # -----------------------------------------------------------------------------
@@ -176,7 +176,7 @@ class Preprocessor(object):
     # ----------------------------------------------------------------------
 
     def error(self,file,line,msg):
-        print("%s:%d %s" % (file,line,msg))
+        print("{0!s}:{1:d} {2!s}".format(file, line, msg))
 
     # ----------------------------------------------------------------------
     # lexprobe()
@@ -239,7 +239,7 @@ class Preprocessor(object):
             self.lexer.input(c)
             tok = self.lexer.token()
             if not tok or tok.value != c:
-                print("Unable to lex '%s' required for preprocessor" % c)
+                print("Unable to lex '{0!s}' required for preprocessor".format(c))
 
     # ----------------------------------------------------------------------
     # add_path()
@@ -425,7 +425,7 @@ class Preprocessor(object):
         str_expansion = {}
         for argnum, i in macro.str_patch:
             if argnum not in str_expansion:
-                str_expansion[argnum] = ('"%s"' % "".join([x.value for x in args[argnum]])).replace("\\","\\\\")
+                str_expansion[argnum] = ('"{0!s}"'.format("".join([x.value for x in args[argnum]]))).replace("\\","\\\\")
             rep[i] = copy.copy(rep[i])
             rep[i].value = str_expansion[argnum]
 
@@ -493,13 +493,13 @@ class Preprocessor(object):
                         if tokens[j].value == '(':
                             tokcount,args,positions = self.collect_args(tokens[j:])
                             if not m.variadic and len(args) !=  len(m.arglist):
-                                self.error(self.source,t.lineno,"Macro %s requires %d arguments" % (t.value,len(m.arglist)))
+                                self.error(self.source,t.lineno,"Macro {0!s} requires {1:d} arguments".format(t.value, len(m.arglist)))
                                 i = j + tokcount
                             elif m.variadic and len(args) < len(m.arglist)-1:
                                 if len(m.arglist) > 2:
-                                    self.error(self.source,t.lineno,"Macro %s must have at least %d arguments" % (t.value, len(m.arglist)-1))
+                                    self.error(self.source,t.lineno,"Macro {0!s} must have at least {1:d} arguments".format(t.value, len(m.arglist)-1))
                                 else:
-                                    self.error(self.source,t.lineno,"Macro %s must have at least %d argument" % (t.value, len(m.arglist)-1))
+                                    self.error(self.source,t.lineno,"Macro {0!s} must have at least {1:d} argument".format(t.value, len(m.arglist)-1))
                                 i = j + tokcount
                             else:
                                 if m.variadic:
@@ -600,7 +600,7 @@ class Preprocessor(object):
         if not source:
             source = ""
             
-        self.define("__FILE__ \"%s\"" % source)
+        self.define("__FILE__ \"{0!s}\"".format(source))
 
         self.source = source
         chunk = []
@@ -762,7 +762,7 @@ class Preprocessor(object):
             except IOError:
                 pass
         else:
-            print("Couldn't find '%s'" % filename)
+            print("Couldn't find '{0!s}'".format(filename))
 
     # ----------------------------------------------------------------------
     # define()
